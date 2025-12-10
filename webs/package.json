@@ -5,8 +5,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "core:dev": "pnpm --filter @my-webs/core-domain --filter @my-webs/core-interfaces --filter @my-webs/infra-openfoodfacts-api dev",
+    "core:dev": "pnpm --filter @my-webs/core-shared-types --filter @my-webs/core-interfaces --filter @my-webs/infra-openfoodfacts-api dev",
     "infra:dev": "pnpm --filter @my-webs/infra-openfoodfacts-api dev",
+    "domain:dev": "pnpm --filter @my-webs/domain-food dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

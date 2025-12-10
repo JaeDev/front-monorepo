@@ -1,4 +1,4 @@
-import { Environment } from "@my-webs/core-domain";
+import { Environment } from "@my-webs/core-shared-types";
 import { OpenFoodFactsApiResponse, OpenFoodFactsProductService } from "@my-webs/core-interfaces";
 
 export class OpenFoodFactsProductServiceImpl implements OpenFoodFactsProductService {

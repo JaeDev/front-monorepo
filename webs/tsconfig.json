@@ -15,17 +15,7 @@
 
     /* 모노레포 핵심 설정 */
     "baseUrl": ".", // 경로 별칭의 기준 디렉토리
-    "paths": {
-      // ⭐ 내부 모듈 참조를 위한 경로 별칭 설정
-      // 이렇게 설정하면 import @my-webs/core-interfaces 대신 @core/interfaces/src/index 와 같이 쓸 수 있음
-      // 하지만 pnpm workspace를 사용하면 모듈 이름을 그대로 쓰는 것이 더 권장됨.
-      // 모노레포 내부에서는 주로 타입스크립트가 모듈 경로를 쉽게 찾도록 도와줍니다.
-
-      // 예시: 패키지 이름을 그대로 쓰는 것이 pnpm/Next.js에 더 적합
-      // "@my-webs/*": ["./*/src"] // 이 설정은 pnpm workspace와 Next.js에서 권장하지 않음
-    },
     
-    /* 패키지 모듈 설정 (라이브러리 모듈에 필수) */
     // "rootDir": "src",
     "outDir": "dist",
     "declaration": true, // **다른 모듈에서 타입을 가져가기 위해 필수 (.d.ts 파일 생성)**
