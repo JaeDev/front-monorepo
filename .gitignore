@@ -1,10 +1,20 @@
 # Dependencies
 /node_modules
+/webs/node_modules
+/webs/app/*/node_modules
+/webs/core/*/node_modules
+/webs/infra/*/node_modules
 
 # Build output
 /dist
+/webs/app/*/dist
+/webs/core/*/dist
+/webs/infra/*/dist
+
+# Build artifacts
 /build
 /.next
+/webs/app/*/.next
 /.output
 
 # Logs
@@ -32,5 +42,5 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-/webs/app/*/.next
-/webs/node_modules
+
+

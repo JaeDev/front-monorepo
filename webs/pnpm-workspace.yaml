@@ -1,0 +1,15 @@
+packages:
+  # 애플리케이션 쉘 (web-shell)
+  - 'app/*'
+
+  # 코어 비즈니스 로직 및 타입 정의
+  - 'core/*'
+
+  # 디자인 시스템 컴포넌트 및 토큰
+  - 'design-system/*'
+
+  # 개별 기능 모듈
+  - 'feature/*'
+
+  # API 기능 모듈
+  - 'infra/*'

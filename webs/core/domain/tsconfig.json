@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json", 
+  "compilerOptions": {
+    "rootDir": "src",
+    // ⭐ outDir이 현재 패키지 내의 dist 폴더를 가리키도록 설정
+    "outDir": "dist" 
+  },
+  // ...
+}

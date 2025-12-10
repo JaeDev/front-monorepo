@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json", // ⭐ 루트 파일 상속
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

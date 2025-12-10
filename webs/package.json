@@ -1,20 +1,19 @@
 {
-  "name": "@front-monorepo/webs",
+  "name": "webs",
   "version": "1.0.0",
-  "workspaces": [
-    "app/*",
-    "core/*",
-    "design-system/*",
-    "feature/*"
-  ],
-
+  "private": true,
   "description": "",
   "main": "index.js",
   "scripts": {
+    "core:dev": "pnpm --filter @my-webs/core-domain --filter @my-webs/core-interfaces --filter @my-webs/infra-openfoodfacts-api dev",
+    "infra:dev": "pnpm --filter @my-webs/infra-openfoodfacts-api dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "packageManager": "pnpm@10.16.0",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
 }
