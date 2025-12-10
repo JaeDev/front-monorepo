@@ -4,12 +4,14 @@
 /webs/app/*/node_modules
 /webs/core/*/node_modules
 /webs/infra/*/node_modules
+/webs/domain/*/node_modules
 
 # Build output
 /dist
 /webs/app/*/dist
 /webs/core/*/dist
 /webs/infra/*/dist
+/webs/domain/*/dist
 
 # Build artifacts
 /build
@@ -41,6 +43,5 @@ yarn-error.log*
 # OS generated files
 .DS_Store
 Thumbs.db
-
 
 

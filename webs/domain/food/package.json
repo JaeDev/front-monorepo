@@ -1,5 +1,5 @@
 {
-  "name": "@my-webs/core-domain",
+  "name": "@my-webs/domain-food",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
