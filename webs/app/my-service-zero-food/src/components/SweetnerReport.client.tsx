@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import CoachTip from './CoachTip.client';
 
 interface SweetenerReportProps {
     has_artificial_sweeteners: boolean;
@@ -24,85 +25,99 @@ const SweetenerReport = ({ has_artificial_sweeteners, artificial_sweeteners_ingr
           </div>
           <h2 className="text-xl font-bold text-gray-900">감미료 구성</h2>
         </div>
-        {has_artificial_sweeteners && (
-          <span className="bg-purple-100 text-purple-600 text-[10px] px-2 py-1 rounded-md font-bold uppercase">
-            Synthetic Sweet
-          </span>
-        )}
       </div>
 
       <p className="text-sm text-gray-500 mb-8 leading-relaxed">
-        설탕 대신 사용된 대체 감미료의 종류를 분석합니다. 인공 감미료는 장 건강과 대사에 영향을 줄 수 있습니다.
+        설탕 대신 사용된 대체 감미료를 분석합니다. 인공 감미료 유무를 확인하세요.
       </p>
 
-      {/* 감미료 유형 대조 분석 */}
-      <div className="grid grid-cols-1 gap-4">
-        
-        {/* 1. 인공 감미료 및 당알코올 (주의군) */}
-        <div className={`p-4 rounded-2xl border-2 transition-all ${
+      {/* 감미료 상세 그룹 */}
+      <div className="space-y-4">
+        {/* 1. 인공 감미료 / 당알코올 */}
+        <SweetenerGroup 
+          label="인공 감미료 및 당알코올"
+          found={has_artificial_sweeteners}
+          ingredients={artificial_sweeteners_ingredients}
+          type="artificial"
+        />
+
+        {/* 2. 천연 유래 감미료 */}
+        <SweetenerGroup 
+          label="천연 유래 저칼로리 감미료"
+          found={has_natural_sweeteners}
+          ingredients={natural_sweeteners_ingredients}
+          type="natural"
+        />
+      </div>
+
+      {/* 하단 코치 팁 (블랙 박스) */}
+      <CoachTip
+        isVisible={isZeroSugarOption}
+        message={
           has_artificial_sweeteners 
-            ? 'border-purple-100 bg-purple-50/30' 
-            : 'border-gray-50 bg-gray-50/30 opacity-50'
+            ? "인공 감미료가 발견되었습니다. 칼로리는 낮지만 장내 환경에는 영향을 줄 수 있으니 가끔씩만 즐기는 게 좋아요!"
+            : "인공 감미료 없는 깨끗한 단맛이네요. 혈당 걱정 없이 즐기기에 아주 좋은 선택입니다."
+        }
+      />
+    </div>
+  );
+};
+
+// 내부 컴포넌트: 감미료 그룹
+const SweetenerGroup = ({ label, found, ingredients, type }: any) => {
+  return (
+    <div className={`p-4 rounded-2xl transition-all border ${
+      found 
+        ? (type === 'artificial' ? 'bg-red-50/30 border-red-100/50' : 'bg-blue-50/30 border-blue-100/50')
+        : 'bg-emerald-50/40 border-emerald-100/50'
+    }`}>
+      <div className="flex items-center gap-2 mb-3">
+        {/* 상태 아이콘 */}
+        <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
+          found ? (type === 'artificial' ? 'bg-red-500' : 'bg-blue-500') : 'bg-emerald-500'
         }`}>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-lg">🧪</span>
-            <span className="text-sm font-bold text-gray-800">인공 감미료 / 당알코올</span>
-            {has_artificial_sweeteners && (
-              <span className="ml-auto text-[10px] bg-purple-200 text-purple-700 px-1.5 py-0.5 rounded font-bold">주의</span>
-            )}
-          </div>
-          
-          {has_artificial_sweeteners ? (
-            <div className="flex flex-wrap gap-1.5">
-              {artificial_sweeteners_ingredients.map((item, idx) => (
-                <span key={idx} className="px-2 py-1 bg-white text-purple-600 text-[11px] rounded-md border border-purple-100 font-medium">
-                  {item}
-                </span>
-              ))}
-            </div>
+          {found ? (
+            <span className="text-[10px] text-white font-bold">!</span>
           ) : (
-            <p className="text-xs text-gray-400 italic">검출된 인공 감미료가 없습니다.</p>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4">
+              <path d="M20 6L9 17L4 12" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           )}
         </div>
 
-        {/* 2. 자연 유래 감미료 (안심군) */}
-        <div className={`p-4 rounded-2xl border-2 transition-all ${
-          has_natural_sweeteners 
-            ? 'border-emerald-100 bg-emerald-50/30' 
-            : 'border-gray-50 bg-gray-50/30 opacity-50'
-        }`}>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-lg">🌿</span>
-            <span className="text-sm font-bold text-gray-800">천연 저칼로리 감미료</span>
-            {has_natural_sweeteners && (
-              <span className="ml-auto text-[10px] bg-emerald-200 text-emerald-700 px-1.5 py-0.5 rounded font-bold">비교적 안심</span>
-            )}
-          </div>
-          
-          {has_natural_sweeteners ? (
-            <div className="flex flex-wrap gap-1.5">
-              {natural_sweeteners_ingredients.map((item, idx) => (
-                <span key={idx} className="px-2 py-1 bg-white text-emerald-600 text-[11px] rounded-md border border-emerald-100 font-medium">
-                  {item}
-                </span>
-              ))}
-            </div>
+        <span className={`text-sm font-bold ${found ? 'text-gray-800' : 'text-emerald-700'}`}>
+          {label}
+        </span>
+
+        <div className="ml-auto">
+          {found ? (
+            <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${
+              type === 'artificial' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
+            }`}>
+              {ingredients.length} Detected
+            </span>
           ) : (
-            <p className="text-xs text-gray-400 italic">검출된 천연 감미료가 없습니다.</p>
+            <span className="text-[10px] font-black text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-tighter font-bold">
+              SAFE & CLEAN
+            </span>
           )}
         </div>
       </div>
 
-      {/* 코치의 요약 피드백 */}
-      {isZeroSugarOption && (
-        <div className="mt-8 flex gap-3 items-start bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
-          <span className="text-xl">💡</span>
-          <p className="text-xs text-indigo-900 leading-snug">
-            {has_artificial_sweeteners 
-              ? "인공 감미료가 포함되어 있습니다. 칼로리는 낮지만 장내 유익균에 영향을 줄 수 있으니 가끔 즐기는 것이 좋습니다."
-              : "천연 감미료를 사용한 비교적 건강한 단맛 제품입니다. 혈당 영향이 적어 다이어트 중에도 적합합니다."}
-          </p>
+      {found ? (
+        <div className="flex flex-wrap gap-1.5 pl-7">
+          {ingredients.map((ing: string, i: number) => (
+            <span key={i} className={`px-2.5 py-1 bg-white text-[11px] rounded-lg border font-bold shadow-sm ${
+              type === 'artificial' ? 'text-red-600 border-red-200' : 'text-blue-600 border-blue-200'
+            }`}>
+              {ing}
+            </span>
+          ))}
         </div>
+      ) : (
+        <p className="pl-7 text-[11px] text-emerald-600/70 font-medium italic">
+          불필요한 감미료가 포함되어 있지 않습니다.
+        </p>
       )}
     </div>
   );
