@@ -11,10 +11,3 @@ export const OPEN_FOOD_FACTS_API = {
         getDetail: OpenFoodFactsProductServiceImpl_getProductDetail
     }
 }
-
-
-export const OPEN_FOOD_FACTS_API_2 = {
-    product: {
-        getDetail: OpenFoodFactsProductServiceImpl_getProductDetail
-    }
-}
