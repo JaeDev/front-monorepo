@@ -2,6 +2,7 @@
 
 import GlycemicReport from "@/components/GlycemicReport.client";
 import ProductSummary, { ProductSummaryProps } from "@/components/ProductSummary.client";
+import SweetenerReport from "@/components/SweetnerReport.client";
 import { IngredientHealthCheck, performIngredientHealthCheck } from "@my-webs/domain-product-food";
 import { OPEN_FOOD_FACTS_API } from "@my-webs/infra-openfoodfacts-api";
 import { useEffect, useState } from "react";
@@ -56,6 +57,9 @@ export default function Home() {
           </div>
           <div>
             <GlycemicReport {...summary.checkResult!} />
+          </div>
+          <div>
+            <SweetenerReport {...summary.checkResult!} />
           </div>
         </>
       }
