@@ -1,7 +1,7 @@
 import { OpenFoodFactsProduct } from "@my-webs/core-interfaces";
 import { ARTIFICIAL_CHEMICALS_CRITERIA, FAT_CRITERIA, GLYCEMIC_CRITERIA, SWEETENER_CRITERIA } from "./db";
 
-interface IngredientHealthCheck {
+export interface IngredientHealthCheck {
     // 1. 혈당 관리 (GLYCEMIC_CRITERIA)
     has_added_sugars: boolean;
     added_sugars_ingredients: string[];

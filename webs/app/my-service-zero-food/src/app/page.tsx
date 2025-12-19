@@ -1,10 +1,14 @@
 'use client'
 
-import { performIngredientHealthCheck } from "@my-webs/domain-product-food";
+import GlycemicReport from "@/components/GlycemicReport.client";
+import ProductSummary, { ProductSummaryProps } from "@/components/ProductSummary.client";
+import { IngredientHealthCheck, performIngredientHealthCheck } from "@my-webs/domain-product-food";
 import { OPEN_FOOD_FACTS_API } from "@my-webs/infra-openfoodfacts-api";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+
+  const [summary, setSummary] = useState<ProductSummaryProps | undefined>(undefined);
 
   useEffect(() => {
 
@@ -29,13 +33,32 @@ export default function Home() {
       return;
     }
 
+    console.log(product.brands)
+    console.log(product.brands_tags)
+    console.log(product.image_url)
+    console.log(product)
     const result = performIngredientHealthCheck(product);
-    console.log(result);
+
+    setSummary({
+      name: product.product_name,
+      thumbnail: product.image_url,
+      brand: product.brands,
+      checkResult: result
+    })
   };
 
   return (
     <div>
-      
+      {
+        summary && <>
+          <div>
+            <ProductSummary {...summary} />
+          </div>
+          <div>
+            <GlycemicReport {...summary.checkResult!} />
+          </div>
+        </>
+      }
     </div>
   );
 }
