@@ -1,5 +1,3 @@
-
-
 export interface OpenFoodFactsProductService {
     getProductDetail(barcode: string): Promise<OpenFoodFactsApiResponse>;
     fetchProductList(keyword: string, page: number): Promise<any>;

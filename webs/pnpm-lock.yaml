@@ -17,9 +17,9 @@ importers:
       '@my-webs/core-interfaces':
         specifier: workspace:^1.0.0
         version: link:../../core/interfaces
-      '@my-webs/domain-food':
+      '@my-webs/domain-product-food':
         specifier: workspace:^1.0.0
-        version: link:../../domain/food
+        version: link:../../domain/product-food
       '@my-webs/infra-openfoodfacts-api':
         specifier: workspace:^1.0.0
         version: link:../../infra/openfoodfacts-api
@@ -76,7 +76,7 @@ importers:
         specifier: ^5
         version: 5.9.3
 
-  domain/food:
+  domain/product-food:
     devDependencies:
       tsup:
         specifier: ^8.0.0
