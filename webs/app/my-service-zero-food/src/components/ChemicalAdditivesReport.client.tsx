@@ -98,21 +98,21 @@ const ChemicalAdditivesReport = ({
     </div>
   );
 };
-// 리팩토링된 ChemicalRow
+
 const ChemicalRow = ({ label, found, ingredients, icon }: any) => {
   return (
     <div className={`p-4 rounded-2xl transition-all border ${
       found 
-        ? 'bg-red-50/30 border-red-100/50' 
-        : 'bg-emerald-50/40 border-emerald-100/50'
+        ? 'bg-red-50/30 border-red-100/50 shadow-sm' // 발견 시: 경고의 붉은빛
+        : 'bg-emerald-50/30 border-emerald-100/30'   // 미검출 시: 옅고 부드러운 초록빛
     }`}>
       <div className="flex items-center gap-3">
         {/* 상태 아이콘 */}
-        <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
-          found ? 'bg-red-500' : 'bg-emerald-500'
+        <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${
+          found ? 'bg-red-500' : 'bg-emerald-400/50' // 미검출 시 아이콘도 옅게 처리
         }`}>
           {found ? (
-            <span className="text-xs text-white">!</span>
+            <span className="text-xs text-white font-bold">!</span>
           ) : (
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4">
               <path d="M20 6L9 17L4 12" strokeLinecap="round" strokeLinejoin="round"/>
@@ -122,20 +122,29 @@ const ChemicalRow = ({ label, found, ingredients, icon }: any) => {
 
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <h3 className={`text-sm font-bold ${found ? 'text-red-900' : 'text-emerald-700'}`}>
+            <h3 className={`text-sm font-bold transition-colors ${
+              found ? 'text-red-900' : 'text-emerald-700/70'
+            }`}>
               {icon} {label}
             </h3>
+            
+            {/* 우측 텍스트 라벨 */}
             {found ? (
-              <span className="text-[10px] font-black text-red-600 uppercase tracking-tighter">Detected</span>
+              <span className="text-[10px] font-black text-red-600 uppercase tracking-tighter bg-red-100 px-1.5 py-0.5 rounded">
+                Detected
+              </span>
             ) : (
-              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-tighter">Safe</span>
+              <span className="text-[10px] font-bold text-emerald-500/60 uppercase tracking-tighter">
+                Safe
+              </span>
             )}
           </div>
           
+          {/* 발견된 성분이 있을 때만 붉은색 태그 노출 */}
           {found && (
-            <div className="mt-2 flex flex-wrap gap-1">
+            <div className="mt-2 flex flex-wrap gap-1.5">
               {ingredients.map((ing: string, i: number) => (
-                <span key={i} className="text-[10px] bg-white text-red-600 px-2 py-0.5 rounded-md border border-red-200 font-bold shadow-sm">
+                <span key={i} className="text-[10px] bg-white text-red-600 px-2 py-0.5 rounded-md border border-red-200 font-bold shadow-sm shadow-red-100/50">
                   {ing}
                 </span>
               ))}
