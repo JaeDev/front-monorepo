@@ -4,15 +4,17 @@ import React from 'react';
 import CoachTip from './CoachTip.client';
 
 interface SweetenerReportProps {
-    has_artificial_sweeteners: boolean;
-    artificial_sweeteners_ingredients: string[];
-    has_natural_sweeteners: boolean;
-    natural_sweeteners_ingredients: string[];
+  has_artificial_sweeteners: boolean;
+  artificial_sweeteners_ingredients: string[];
+  has_natural_sweeteners: boolean;
+  natural_sweeteners_ingredients: string[];
 }
 
 const SweetenerReport = ({ has_artificial_sweeteners, artificial_sweeteners_ingredients, has_natural_sweeteners, natural_sweeteners_ingredients}: SweetenerReportProps) => {
   
-    // 제로 슈거 제품인지 여부 (인공이나 자연 대체당이 있을 때)
+  // 제로 슈거 제품인지 여부 (인공이나 자연 대체당이 있을 때)
+  const hasArtificial = has_artificial_sweeteners;
+  const isHighChemicalSweet = hasArtificial && artificial_sweeteners_ingredients.length >= 2;
   const isZeroSugarOption = has_artificial_sweeteners || has_natural_sweeteners;
 
   return (
@@ -25,6 +27,15 @@ const SweetenerReport = ({ has_artificial_sweeteners, artificial_sweeteners_ingr
           </div>
           <h2 className="text-xl font-bold text-gray-900">감미료 구성</h2>
         </div>
+
+        {/* 혈당/지방과 통일된 위험 배지 UI */}
+        {hasArtificial && (
+          <span className={`text-[10px] px-2 py-1 rounded-md font-black animate-pulse ${
+            isHighChemicalSweet ? 'bg-red-600 text-white' : 'bg-orange-400 text-white'
+          }`}>
+            {isHighChemicalSweet ? 'ZERO-CAL TRAP' : 'SYNTHETIC SWEET'}
+          </span>
+        )}
       </div>
 
       <p className="text-sm text-gray-500 mb-8 leading-relaxed">
