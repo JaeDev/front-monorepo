@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import CoachTip from './CoachTip.client';
 
 interface GlycemicReportProps {
     has_added_sugars: boolean;
@@ -14,7 +15,7 @@ interface GlycemicReportProps {
 const GlycemicReport = ({ has_added_sugars, added_sugars_ingredients, has_refined_grains, refined_grains_ingredients, has_processed_starches, processed_starches_ingredients }: GlycemicReportProps) => {
 
   // 전체적인 혈당 위험도 체크
-  const isHighRisk = has_added_sugars && (has_refined_grains || has_processed_starches);
+  const isHighRisk = has_added_sugars || has_refined_grains;
 
   return (
     <div className="bg-white px-6 py-8">
@@ -65,14 +66,8 @@ const GlycemicReport = ({ has_added_sugars, added_sugars_ingredients, has_refine
       </div>
 
       {/* 코치의 팁 박스 */}
-      {isHighRisk && (
-        <div className="mt-8 bg-gray-50 rounded-2xl p-4 border border-gray-100">
-          <p className="text-xs font-bold text-gray-400 mb-1 uppercase">Coach's Advice</p>
-          <p className="text-sm text-gray-600 leading-snug">
-            "당분과 정제 가루가 동시에 발견되었어요. 이 조합은 혈당을 가장 빠르게 올리는 <strong>'지방 축적 치트키'</strong>입니다. 가급적 섬유질이 풍부한 채소를 먼저 드신 후에 섭취하세요!"
-          </p>
-        </div>
-      )}
+      <CoachTip isVisible={isHighRisk} message={<>"당분과 정제 가루가 동시에 발견되었어요. 이 조합은 혈당을 가장 빠르게 올리는 <strong>'지방 축적 치트키'</strong>입니다. 가급적 섬유질이 풍부한 채소를 먼저 드신 후에 섭취하세요!"</>}/>
+
     </div>
   );
 };
@@ -80,25 +75,56 @@ const GlycemicReport = ({ has_added_sugars, added_sugars_ingredients, has_refine
 // 내부 컴포넌트: 성분 그룹 표시
 const IngredientGroup = ({ label, found, ingredients, dotColor }: any) => {
   return (
-    <div className={`flex flex-col ${!found ? 'opacity-40' : ''}`}>
-      <div className="flex items-center gap-2 mb-2">
-        <div className={`w-2 h-2 rounded-full ${found ? dotColor : 'bg-gray-300'}`} />
-        <span className={`text-sm font-bold ${found ? 'text-gray-800' : 'text-gray-400'}`}>
+    <div className={`group flex flex-col p-4 rounded-2xl transition-all ${
+      found ? 'bg-red-50/30 border border-red-100/50' : 'bg-emerald-50/40 border border-emerald-100/50'
+    }`}>
+      <div className="flex items-center gap-2 mb-3">
+        {/* 상태 아이콘 */}
+        <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-colors ${
+          found ? 'bg-red-500 shadow-sm shadow-red-200' : 'bg-emerald-500 shadow-sm shadow-emerald-200'
+        }`}>
+          {found ? (
+            <span className="text-[10px] text-white font-bold">!</span>
+          ) : (
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4">
+              <path d="M20 6L9 17L4 12" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )}
+        </div>
+
+        <span className={`text-sm font-bold ${found ? 'text-red-900' : 'text-emerald-700'}`}>
           {label}
         </span>
-        <span className="text-[10px] font-medium text-gray-400 ml-auto">
-          {found ? `${ingredients.length}종 발견` : '미검출'}
-        </span>
+
+        {/* 우측 상태 라벨 */}
+        <div className="ml-auto">
+          {found ? (
+            <span className="text-[10px] font-black text-red-600 bg-red-100 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+              {ingredients.length} Detected
+            </span>
+          ) : (
+            <span className="text-[10px] font-black text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+              Clean
+            </span>
+          )}
+        </div>
       </div>
       
+      {/* 발견된 성분 태그 (붉은색 테마 적용) */}
       {found && (
-        <div className="flex flex-wrap gap-1.5 pl-4">
+        <div className="flex flex-wrap gap-1.5 pl-7">
           {ingredients.map((item: string, idx: number) => (
-            <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-600 text-[11px] rounded-md border border-gray-200">
+            <span key={idx} className="px-2.5 py-1 bg-white text-red-600 text-[11px] rounded-lg border border-red-200 font-bold shadow-sm shadow-red-100/50">
               {item}
             </span>
           ))}
         </div>
+      )}
+
+      {!found && (
+        <p className="pl-7 text-[11px] text-emerald-600/70 font-medium italic">
+          검출된 성분이 없습니다.
+        </p>
       )}
     </div>
   );
