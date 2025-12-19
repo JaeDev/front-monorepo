@@ -81,7 +81,8 @@ export function performIngredientHealthCheck(product: OpenFoodFactsProduct): Ing
     const flavorEnhancers = getDetected(ARTIFICIAL_CHEMICALS_CRITERIA.flavor_enhancers.keywords);
     const stabilizers = getDetected(ARTIFICIAL_CHEMICALS_CRITERIA.stabilizers.keywords);
 
-    return {// 혈당 관리
+    return {
+        // 혈당 관리
         has_added_sugars: addedSugars.length > 0,
         added_sugars_ingredients: addedSugars,
 
@@ -122,3 +123,5 @@ export function performIngredientHealthCheck(product: OpenFoodFactsProduct): Ing
         stabilizers_ingredients: stabilizers,
     };
 }
+
+export * from './db'

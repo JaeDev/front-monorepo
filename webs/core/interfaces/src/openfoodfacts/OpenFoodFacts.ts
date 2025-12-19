@@ -14,7 +14,7 @@ export interface OpenFoodFactsApiResponse {
 // product 객체 타입 정의 (분석기에 필요한 필드만)
 export interface OpenFoodFactsProduct {
     code: string;
-    product_name?: string;
+    product_name: string;
     brands?: string;
     image_url?: string;
     nutriscore_grade?: string;
@@ -48,4 +48,9 @@ interface OpenFoodFactsIngredients {
 
     ciqual_food_code?: string;
     ecobalyse_code?: string;
+
+    from_palm_oil?: OpenFoodFactsBoolean;
+    processing?: string;
+    quantity?: string;
+    quantity_g?: number;
 }

@@ -1,13 +1,5 @@
 
-
-interface HealthCategoryInfo {
-    label: string;
-    description: string;
-    risk_reason: string;
-    keywords: string[];
-}
-
-export const GLYCEMIC_CRITERIA: Record<string, HealthCategoryInfo> = {
+export const GLYCEMIC_CRITERIA = {
     // 1-1. 직접적인 당분 (단맛이 나는 것)
     added_sugars: {
         label: '당류 및 시럽 (Added Sugars)',
@@ -30,7 +22,7 @@ export const GLYCEMIC_CRITERIA: Record<string, HealthCategoryInfo> = {
         keywords: ['starch', 'modified starch', 'corn starch', 'potato starch', 'tapioca starch', 'maltodextrin', 'dextrin', 'potato flakes']
     }
 };
-export const SWEETENER_CRITERIA: Record<string, HealthCategoryInfo> = {
+export const SWEETENER_CRITERIA = {
     artificial: {
         label: '인공 감미료 및 당알코올',
         description: '화학 합성 감미료 및 칼로리가 낮은 당알코올입니다.',
@@ -46,7 +38,7 @@ export const SWEETENER_CRITERIA: Record<string, HealthCategoryInfo> = {
 };
 
 
-export const FAT_CRITERIA: Record<string, HealthCategoryInfo> = {
+export const FAT_CRITERIA = {
     // 3-1. 피해야 할 지방
     unhealthy_fats: {
         label: '나쁜 기름 (Unhealthy Fats)',
