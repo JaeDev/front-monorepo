@@ -1,4 +1,5 @@
 import React from 'react';
+import CoachTip from './CoachTip.client';
 
 interface ChemicalReportProps {
     has_preservatives: boolean;
@@ -84,51 +85,61 @@ const ChemicalAdditivesReport = ({
       </div>
 
       {/* 가공도 총평 박스 */}
-      <div className="mt-10 p-5 bg-blue-50 rounded-3xl border border-blue-100 relative overflow-hidden">
-        <div className="relative z-10">
-          <h4 className="text-blue-900 font-bold text-sm mb-2">코치의 가공도 평가</h4>
-          <p className="text-blue-800 text-xs leading-normal opacity-80">
-            {detectedCount >= 3 
-              ? "여러 종류의 화학 첨가물이 발견되었습니다. 전형적인 '초가공식품'의 특징을 보이고 있으니 빈도를 줄이는 것이 좋습니다."
-              : detectedCount > 0 
-              ? "필요 최소한의 첨가물만 들어있거나 비교적 깔끔한 편입니다. 안심하고 드셔도 좋습니다."
-              : "화학 첨가물이 거의 없는 아주 깨끗한 클린 라벨 제품입니다! 최고의 선택이에요."}
-          </p>
-        </div>
-        {/* 배경에 큰 아이콘 살짝 노출 */}
-        <span className="absolute -bottom-2 -right-2 text-6xl opacity-10 grayscale">🧪</span>
-      </div>
+      <CoachTip 
+        isVisible={true} 
+        message={
+          detectedCount >= 3 
+          ? "여러 종류의 화학 첨가물이 발견되었습니다. 전형적인 '초가공식품'의 특징을 보이고 있으니 빈도를 줄이는 것이 좋습니다."
+          : detectedCount > 0 
+          ? "필요 최소한의 첨가물만 들어있거나 비교적 깔끔한 편입니다. 안심하고 드셔도 좋습니다."
+          : "화학 첨가물이 거의 없는 아주 깨끗한 클린 라벨 제품입니다! 최고의 선택이에요."
+        } 
+        />
     </div>
   );
 };
-
-// 첨가물 행 컴포넌트
+// 리팩토링된 ChemicalRow
 const ChemicalRow = ({ label, found, ingredients, icon }: any) => {
   return (
     <div className={`p-4 rounded-2xl transition-all border ${
-      found ? 'bg-white border-gray-200 shadow-sm' : 'bg-gray-50 border-transparent opacity-40'
+      found 
+        ? 'bg-red-50/30 border-red-100/50' 
+        : 'bg-emerald-50/40 border-emerald-100/50'
     }`}>
       <div className="flex items-center gap-3">
-        <span className="text-lg">{icon}</span>
+        {/* 상태 아이콘 */}
+        <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+          found ? 'bg-red-500' : 'bg-emerald-500'
+        }`}>
+          {found ? (
+            <span className="text-xs text-white">!</span>
+          ) : (
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4">
+              <path d="M20 6L9 17L4 12" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          )}
+        </div>
+
         <div className="flex-1">
-          <h3 className={`text-sm font-bold ${found ? 'text-gray-800' : 'text-gray-400'}`}>
-            {label}
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className={`text-sm font-bold ${found ? 'text-red-900' : 'text-emerald-700'}`}>
+              {icon} {label}
+            </h3>
+            {found ? (
+              <span className="text-[10px] font-black text-red-600 uppercase tracking-tighter">Detected</span>
+            ) : (
+              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-tighter">Safe</span>
+            )}
+          </div>
+          
           {found && (
             <div className="mt-2 flex flex-wrap gap-1">
               {ingredients.map((ing: string, i: number) => (
-                <span key={i} className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full border border-blue-100">
+                <span key={i} className="text-[10px] bg-white text-red-600 px-2 py-0.5 rounded-md border border-red-200 font-bold shadow-sm">
                   {ing}
                 </span>
               ))}
             </div>
-          )}
-        </div>
-        <div className="flex items-center">
-          {found ? (
-            <span className="text-red-500 text-xs font-black">DETECTED</span>
-          ) : (
-            <span className="text-gray-300 text-xs font-medium italic">NONE</span>
           )}
         </div>
       </div>
