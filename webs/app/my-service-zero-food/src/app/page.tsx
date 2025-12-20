@@ -5,7 +5,6 @@ import { Camera, Barcode, Search, Image as ImageIcon  } from 'lucide-react';
 import ProductSummary, { ProductSummaryProps } from '@/components/ProductSummary.client';
 import { OPEN_FOOD_FACTS_API } from '@my-webs/infra-openfoodfacts-api';
 import { performIngredientHealthCheck } from '@my-webs/domain-product-food';
-import BarcodeInfoBar from '@/components/BarcodeInfoBar.client';
 import GlycemicReport from '@/components/GlycemicReport.client';
 import SweetenerReport from '@/components/SweetnerReport.client';
 import FatQualityReport from '@/components/FatQualityReport.client';
@@ -15,7 +14,6 @@ import AnalysisLoading from '@/components/AnalysisLoading.client';
 export default function Home() {
 
   const [summary, setSummary] = useState<ProductSummaryProps | undefined>(undefined);
-  const [barcode, setBarcode] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
   
   // 리포트 섹션의 위치를 가리키는 레퍼런스
@@ -36,13 +34,6 @@ export default function Home() {
     }
   }, [summary]);
 
-  // 최상단으로 부드럽게 스크롤하는 함수
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
 
   // useEffect의 콜백 함수는 직접 async로 만들 수 없으므로,
   // 내부에 async 함수를 선언하고 호출합니다.
@@ -70,9 +61,9 @@ export default function Home() {
       const result = performIngredientHealthCheck(product);
       console.log(product.ingredients)
 
-      setBarcode(barcode);
       setSummary({
         name: product.product_name,
+        barcode: barcode,
         thumbnail: product.image_url,
         brand: product.brands,
         checkResult: result
@@ -139,16 +130,7 @@ export default function Home() {
       {
         summary && !isLoading && (
           <div ref={reportRef} className="animate-in fade-in slide-in-from-bottom-10 duration-700">
-            {/* 플로팅 헤더 포인트! sticky 설정 */}
-            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm"
-              onClick={scrollToTop}>
-              <BarcodeInfoBar 
-                barcode={barcode} 
-              />
-            </div>
-            <div>
-              <ProductSummary {...summary} />
-            </div>
+            <ProductSummary {...summary} />
             <div>
               <GlycemicReport {...summary.checkResult!} />
             </div>

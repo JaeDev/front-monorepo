@@ -2,20 +2,30 @@
 
 import { ARTIFICIAL_CHEMICALS_CRITERIA, FAT_CRITERIA, GLYCEMIC_CRITERIA, IngredientHealthCheck, SWEETENER_CRITERIA } from '@my-webs/domain-product-food';
 import React from 'react';
+import BarcodeInfoBar from './BarcodeInfoBar.client';
 
 // 위에서 정의한 인터페이스를 타입으로 사용
 export interface ProductSummaryProps {
   name: string;
+  barcode: string;
   thumbnail?: string;
   brand?: string;
   checkResult?: IngredientHealthCheck;
 }
 
-const ProductSummary = ({ name, thumbnail, brand, checkResult }: ProductSummaryProps) => {
+export type SafeStatus = '위험' | '주의' | '안전';
 
-  type SafeStatus = '위험' | '주의' | '안전';
+interface ProductGradeStatus {
+  label: SafeStatus;
+  color: string;
+  icon: string;
+  msgs: string[];
+}
 
-  const getGradeStatus = () => {
+
+const ProductSummary = ({ name, barcode, thumbnail, brand, checkResult }: ProductSummaryProps) => {
+
+  const getGradeStatus = (): ProductGradeStatus => {
     const redFlags = [];
     const yellowFlags = [];
 
@@ -39,7 +49,7 @@ const ProductSummary = ({ name, thumbnail, brand, checkResult }: ProductSummaryP
     if (yellowFlags.length > 0) {
       return { label: '주의', color: 'bg-amber-500', icon: '⚠️', msgs: yellowFlags };
     }
-    return { label: '안심', color: 'bg-emerald-500', icon: '✅', msgs: ['매우 깨끗한 성분입니다.'] };
+    return { label: '안전', color: 'bg-emerald-500', icon: '✅', msgs: ['매우 깨끗한 성분입니다.'] };
   };
 
   const status = getGradeStatus();
@@ -58,90 +68,108 @@ const ProductSummary = ({ name, thumbnail, brand, checkResult }: ProductSummaryP
     }
   };
 
+  // 최상단으로 부드럽게 스크롤하는 함수
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
-    <div className={`relative w-full text-white ${status.color} transition-colors duration-500`}>
-      <div className="max-w-md mx-auto px-6 pt-12 pb-10">
-        
-        {/* 1. 제품 기본 정보 섹션 */}
-        <div className="flex items-center gap-5 mb-8">
-          <div className="relative shrink-0">
-            {thumbnail ? (
-              <img 
-                src={thumbnail} 
-                alt={name} 
-                className="w-24 h-24 object-cover rounded-2xl shadow-lg border-2 border-white/30"
-              />
-            ) : (
-              <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center border border-white/30 text-3xl">📦</div>
-            )}
-            <div className="absolute -top-2 -left-2 bg-white text-gray-900 w-8 h-8 rounded-full flex items-center justify-center text-lg shadow-md">
-              {status.icon}
+    <>
+      {/* 플로팅 헤더 포인트! sticky 설정 */}
+      <div className={`sticky top-0 z-50 backdrop-blur-md shadow-sm ${status.color}`}
+        onClick={scrollToTop}>
+        <BarcodeInfoBar
+          barcode={barcode} 
+          status={status.label}
+        />
+      </div>
+      <div className={`relative w-full text-white ${status.color} transition-colors duration-500`}>
+        <div className="max-w-md mx-auto px-6 pt-12 pb-10">
+          
+          {/* 1. 제품 기본 정보 섹션 */}
+          <div className="flex items-center gap-5 mb-8">
+            <div className="relative shrink-0">
+              {thumbnail ? (
+                <img 
+                  src={thumbnail} 
+                  alt={name} 
+                  className="w-24 h-24 object-cover rounded-2xl shadow-lg border-2 border-white/30"
+                />
+              ) : (
+                <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center border border-white/30 text-3xl">📦</div>
+              )}
+              <div className="absolute -top-2 -left-2 bg-white text-gray-900 w-8 h-8 rounded-full flex items-center justify-center text-lg shadow-md">
+                {status.icon}
+              </div>
+            </div>
+            
+            <div className="flex-1 min-w-0">
+              <p className="text-white/70 text-[10px] font-black uppercase tracking-widest mb-1">{brand || 'HEALTH COACH ANALYZED'}</p>
+              <h1 className="text-xl font-extrabold leading-tight truncate mb-2">{name}</h1>
             </div>
           </div>
-          
-          <div className="flex-1 min-w-0">
-            <p className="text-white/70 text-[10px] font-black uppercase tracking-widest mb-1">{brand || 'HEALTH COACH ANALYZED'}</p>
-            <h1 className="text-xl font-extrabold leading-tight truncate mb-2">{name}</h1>
-          </div>
-        </div>
 
-        {/* 메시지 영역: 여러 개의 메시지를 깔끔하게 노출 */}
-        <div className="bg-white/15 backdrop-blur-md rounded-2xl p-5 mb-6 border border-white/10 shadow-inner">
-          <div className="flex gap-4">
-            <span className="text-4xl shrink-0">{status.icon}</span>
-            <div className="flex-1 overflow-hidden">
-              <p className="text-[10px] opacity-70 font-black uppercase mb-2 tracking-widest text-white/90">
-                주요 분석 결과 ({status.msgs.length})
-              </p>
-              
-              {/* 메시지 리스트 또는 롤링 텍스트 */}
-              <div className="space-y-3">
-                {status.msgs.slice(0, 2).map((msg, idx) => ( // 상단에는 최대 2개만 노출
-                  <p key={idx} className="text-sm font-bold leading-snug break-keep animate-fadeIn">
-                    • {msg}
-                  </p>
-                ))}
-                {status.msgs.length > 2 && (
-                  <p className="text-[10px] opacity-60 font-medium italic">
-                    외 {status.msgs.length - 2}개의 주의 사항이 더 있습니다.
-                  </p>
-                )}
+          {/* 메시지 영역: 여러 개의 메시지를 깔끔하게 노출 */}
+          <div className="bg-white/15 backdrop-blur-md rounded-2xl p-5 mb-6 border border-white/10 shadow-inner">
+            <div className="flex gap-4">
+              <span className="text-4xl shrink-0">{status.icon}</span>
+              <div className="flex-1 overflow-hidden">
+                <p className="text-[10px] opacity-70 font-black uppercase mb-2 tracking-widest text-white/90">
+                  주요 분석 결과 ({status.msgs.length})
+                </p>
+                
+                {/* 메시지 리스트 또는 롤링 텍스트 */}
+                <div className="space-y-3">
+                  {status.msgs.slice(0, 2).map((msg, idx) => ( // 상단에는 최대 2개만 노출
+                    <p key={idx} className="text-sm font-bold leading-snug break-keep animate-fadeIn">
+                      • {msg}
+                    </p>
+                  ))}
+                  {status.msgs.length > 2 && (
+                    <p className="text-[10px] opacity-60 font-medium italic">
+                      외 {status.msgs.length - 2}개의 주의 사항이 더 있습니다.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
+        
+          {/* 4대 핵심 지표 대시보드 (Grid) */}
+          <div className="grid grid-cols-2 gap-3 pb-10">
+            <SectionBadge 
+              icon="🩸" 
+              label="혈당 관리" 
+              status={getSectionStatus('glycemic')} 
+            />
+            <SectionBadge 
+              icon="🍯" 
+              label="감미료" 
+              status={getSectionStatus('sweetener')} 
+            />
+            <SectionBadge 
+              icon="🥑" 
+              label="지방 품질" 
+              status={getSectionStatus('fat')} 
+            />
+            <SectionBadge 
+              icon="🧪" 
+              label="첨가물" 
+              status={getSectionStatus('chemical')} 
+            />
+          </div>
         </div>
-      
-        {/* 4대 핵심 지표 대시보드 (Grid) */}
-        <div className="grid grid-cols-2 gap-3 pb-10">
-          <SectionBadge 
-            icon="🩸" 
-            label="혈당 관리" 
-            status={getSectionStatus('glycemic')} 
-          />
-          <SectionBadge 
-            icon="🍯" 
-            label="감미료" 
-            status={getSectionStatus('sweetener')} 
-          />
-          <SectionBadge 
-            icon="🥑" 
-            label="지방 품질" 
-            status={getSectionStatus('fat')} 
-          />
-          <SectionBadge 
-            icon="🧪" 
-            label="첨가물" 
-            status={getSectionStatus('chemical')} 
-          />
-        </div>
-      </div>
 
 
-      {/* 다음 섹션으로 유도하는 디자인 요소 */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-white rounded-t-[32px] flex justify-center items-center">
-        <div className="w-12 h-1.5 bg-gray-200 rounded-full mt-2 opacity-50"></div>
+        {/* 다음 섹션으로 유도하는 디자인 요소 */}
+        <div className="absolute bottom-0 left-0 right-0 h-8 bg-white rounded-t-[32px] flex justify-center items-center">
+          <div className="w-12 h-1.5 bg-gray-200 rounded-full mt-2 opacity-50"></div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
