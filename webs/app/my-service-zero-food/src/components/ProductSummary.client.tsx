@@ -1,13 +1,14 @@
 'use client'
 
-import { ARTIFICIAL_CHEMICALS_CRITERIA, FAT_CRITERIA, GLYCEMIC_CRITERIA, IngredientHealthCheck, SWEETENER_CRITERIA } from '@my-webs/domain-product-food';
+import { IngredientHealthCheck } from '@my-webs/domain-product-food';
 import React from 'react';
-import BarcodeInfoBar from './BarcodeInfoBar.client';
 
 // 위에서 정의한 인터페이스를 타입으로 사용
 export interface ProductSummaryProps {
   name: string;
   barcode: string;
+  status: ProductGradeStatus;
+
   thumbnail?: string;
   brand?: string;
   checkResult?: IngredientHealthCheck;
@@ -15,45 +16,15 @@ export interface ProductSummaryProps {
 
 export type SafeStatus = '위험' | '주의' | '안전';
 
-interface ProductGradeStatus {
+export interface ProductGradeStatus {
   label: SafeStatus;
   color: string;
   icon: string;
   msgs: string[];
 }
 
+const ProductSummary = ({ name, barcode, thumbnail, brand, status, checkResult }: ProductSummaryProps) => {
 
-const ProductSummary = ({ name, barcode, thumbnail, brand, checkResult }: ProductSummaryProps) => {
-
-  const getGradeStatus = (): ProductGradeStatus => {
-    const redFlags = [];
-    const yellowFlags = [];
-
-    // 1. 위험 항목 수집 (Red Flags)
-    if (checkResult?.has_added_sugars) redFlags.push(GLYCEMIC_CRITERIA.added_sugars.risk_reason);
-    if (checkResult?.has_refined_grains) redFlags.push(GLYCEMIC_CRITERIA.refined_grains.risk_reason);
-    if (checkResult?.has_unhealthy_fats) redFlags.push(FAT_CRITERIA.unhealthy_fats.risk_reason);
-    if (checkResult?.has_preservatives) redFlags.push(ARTIFICIAL_CHEMICALS_CRITERIA.preservatives.risk_reason);
-    if (checkResult?.has_antioxidants) redFlags.push(ARTIFICIAL_CHEMICALS_CRITERIA.antioxidants.risk_reason);
-    if (checkResult?.has_stabilizers) redFlags.push(ARTIFICIAL_CHEMICALS_CRITERIA.stabilizers.risk_reason);
-
-    // 2. 주의 항목 수집 (Yellow Flags)
-    if (checkResult?.has_processed_starches) yellowFlags.push(GLYCEMIC_CRITERIA.processed_starches.risk_reason);
-    if (checkResult?.has_artificial_sweeteners) yellowFlags.push(SWEETENER_CRITERIA.artificial.risk_reason);
-    if (checkResult?.has_colorants) yellowFlags.push(ARTIFICIAL_CHEMICALS_CRITERIA.colorants.risk_reason);
-
-    // 3. 상태 결정 (우선순위: 위험 > 주의 > 안심)
-    if (redFlags.length > 0) {
-      return { label: '위험', color: 'bg-red-500', icon: '🚫', msgs: redFlags };
-    }
-    if (yellowFlags.length > 0) {
-      return { label: '주의', color: 'bg-amber-500', icon: '⚠️', msgs: yellowFlags };
-    }
-    return { label: '안전', color: 'bg-emerald-500', icon: '✅', msgs: ['매우 깨끗한 성분입니다.'] };
-  };
-
-  const status = getGradeStatus();
-  
   // 각 섹션별 상태 판별 로직
   const getSectionStatus = (type: 'glycemic' | 'sweetener' | 'fat' | 'chemical'): SafeStatus => {
     switch (type) {
@@ -68,24 +39,8 @@ const ProductSummary = ({ name, barcode, thumbnail, brand, checkResult }: Produc
     }
   };
 
-  // 최상단으로 부드럽게 스크롤하는 함수
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
-
   return (
     <>
-      {/* 플로팅 헤더 포인트! sticky 설정 */}
-      <div className={`sticky top-0 z-50 backdrop-blur-md shadow-sm ${status.color}`}
-        onClick={scrollToTop}>
-        <BarcodeInfoBar
-          barcode={barcode} 
-          status={status.label}
-        />
-      </div>
       <div className={`relative w-full text-white ${status.color} transition-colors duration-500`}>
         <div className="max-w-md mx-auto px-6 pt-12 pb-10">
           
