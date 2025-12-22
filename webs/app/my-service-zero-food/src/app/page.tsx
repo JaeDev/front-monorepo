@@ -11,6 +11,7 @@ import FatQualityReport from '@/components/FatQualityReport.client';
 import ChemicalAdditivesReport from '@/components/ChemicalAdditivesReport.client';
 import AnalysisLoading from '@/components/AnalysisLoading.client';
 import BarcodeInfoBar from '@/components/BarcodeInfoBar.client';
+import { FILE_UTILS } from '@my-webs/core-shared-utils';
 
 
 
@@ -97,8 +98,29 @@ export default function Home() {
   };
 
   const handleFile = (file: File) => {
-    console.log(file);
+    searchBarcode(file)
   };
+
+  const searchBarcode = async (file: File) => {
+    var barcode = undefined
+    try {
+      barcode = await FILE_UTILS.scanBarcodeFromImage(file)
+    } catch(e) {
+      // error
+    } finally {
+
+      if (barcode === undefined || barcode === null || barcode === '') {
+        // no barcode
+        return;
+      }
+
+      await fetchOpenFoodFactsProductDetail(barcode);
+    }
+
+    
+    
+    
+  }
 
 
   const getGradeStatus = (checkResult: IngredientHealthCheck): ProductGradeStatus => {

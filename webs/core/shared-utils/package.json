@@ -1,5 +1,5 @@
 {
-  "name": "@my-webs/domain-product-food",
+  "name": "@my-webs/core-shared-utils",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -8,10 +8,6 @@
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "@my-webs/core-interfaces": "workspace:^1.0.0",
-    "@my-webs/core-shared-utils": "workspace:^1.0.0"
-  },
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5"
@@ -19,5 +15,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.16.0"
+  "packageManager": "pnpm@10.16.0",
+  "dependencies": {
+    "@zxing/library": "^0.21.3"
+  }
 }

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@my-webs/core-interfaces": "workspace:^1.0.0",
+    "@my-webs/core-shared-utils": "workspace:^1.0.0",
     "@my-webs/domain-product-food": "workspace:^1.0.0",
     "@my-webs/infra-openfoodfacts-api": "workspace:^1.0.0",
     "lucide-react": "^0.562.0",
