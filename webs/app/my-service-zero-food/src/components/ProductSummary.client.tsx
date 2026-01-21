@@ -63,7 +63,7 @@ const ProductSummary = ({ name, barcode, thumbnail, brand, status, checkResult }
             
             <div className="flex-1 min-w-0">
               <p className="text-white/70 text-[10px] font-black uppercase tracking-widest mb-1">{brand || 'HEALTH COACH ANALYZED'}</p>
-              <h1 className="text-xl font-extrabold leading-tight truncate mb-2">{name}</h1>
+              <h1 className="text-xl font-extrabold leading-tight break-words mb-2">{name}</h1>
             </div>
           </div>
 
